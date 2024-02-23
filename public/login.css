@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
+*, *:before, *:after {
+  box-sizing: border-box;
+
+}
+
+body {
+  min-height: 100vh;
+  min-width: 100vw;
+  font-family: "Raleway", sans-serif;
+  margin: 0;
+
+}
+
+.container1 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.container1:hover .top:before, .container1:hover .top:after, .container1:hover .bottom:before, .container1:hover .bottom:after, .container1:active .top:before, .container1:active .top:after, .container1:active .bottom:before, .container1:active .bottom:after {
+  margin-left: 200px;
+  transform-origin: -200px 50%;
+  transition-delay: 0s;
+}
+.container1:hover .center, .container1:active .center {
+  opacity: 1;
+  transition-delay: 0.2s;
+}
+
+.top:before, .top:after, .bottom:before, .bottom:after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 200vmax;
+  height: 200vmax;
+  top: 50%;
+  left: 50%;
+  margin-top: -100vmax;
+  transform-origin: 0 50%;
+  transition: all 0.5s cubic-bezier(0.445, 0.05, 0, 1);
+  z-index: 10;
+  opacity: 0.7;
+  transition-delay: 0.2s;
+}
+
+.top:before {
+  transform: rotate(45deg);
+  background: #570508;
+}
+.top:after {
+  transform: rotate(135deg);
+  background: #5b0a0a;
+}
+
+.bottom:before {
+  transform: rotate(-45deg);
+  background: #1d153b;
+}
+.bottom:after {
+  transform: rotate(-135deg);
+  background: #000000;
+}
+
+.center {
+  position: absolute;
+  width: 35%;
+  height: 60%;
+  top: 45%;
+  left: 47%;
+  margin-left: -200px;
+  margin-top: -200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.445, 0.05, 0, 1);
+  transition-delay: 0s;
+  color: #000000;
+  z-index: 10;
+  border-radius: 20px;
+  background-color: rgb(17 24 39);
+}
+
+.center input {
+  width: 30vw;
+  padding: 15px;
+  margin: 5px;
+  border: 1px solid #020202;
+  border-radius: 8px;
+  font-family: inherit;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.center h2{
+  text-align: center;
+}
+

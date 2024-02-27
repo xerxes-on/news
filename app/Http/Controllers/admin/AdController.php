@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Events\Action_store;
 use App\Http\Controllers\Controller;
 use App\Models\Ad;
 use Illuminate\Http\Request;
@@ -37,7 +38,9 @@ class AdController extends Controller
         $insert['img1'] = $fileName;
         $insert['img2'] = $fileName2;
 
-        Ad::create($insert);
+        $ad = Ad::create($insert);
+        event(new Action_store($ad,'create', auth()->user(), $request->ip(), 'articles' ));
+
         return redirect()->route('ad.index')->with('message', 'Created successfully 🥳🥳');
     }
 
@@ -76,14 +79,17 @@ class AdController extends Controller
             $insert['img2'] = $fileName;
         }
         $ad->update($insert);
+        event(new Action_store($ad,'update', auth()->user(), $request->ip(), 'articles' ));
+
         return redirect()->route('ad.index')->with('message', 'Updated successfully 🥳');
 
     }
 
-    public function destroy(Ad $ad)
+    public function destroy(Ad $ad, Request $request)
     {
         unlink('files/images/' . $ad['img1']);
         unlink('files/images/' . $ad['img2']);
+        event(new Action_store($ad,'delete', auth()->user(), $request->ip(), 'articles' ));
         $ad->delete();
         return redirect()->route('ad.index')->with('message', 'Deleted successfully 🥳');
     }

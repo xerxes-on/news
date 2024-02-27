@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Events\Action_store;
+use App\Events\Actionstore;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
@@ -44,6 +46,7 @@ class ArticleController extends Controller
 
         $article = Article::create($insert);
         $article->tags()->attach($tags);
+        event(new Action_store($article,'create', auth()->user(), $request->ip(), 'articles' ));
         return redirect()->route('article.index')->with('message', 'Created successfully 🥳🥳');
     }
 
@@ -57,6 +60,7 @@ class ArticleController extends Controller
     {
         $tags  = Tag::all();
         $categories = Category::all();
+
         return view('admin.article.edit', compact(['article', 'categories','tags']));
 
     }
@@ -78,12 +82,15 @@ class ArticleController extends Controller
 
         $article->update($insert);
         $article->tags()->attach($tags);
+        event(new Action_store($article,'update', auth()->user(), $request->ip(), 'articles' ));
+
         return redirect()->route('article.index')->with('message', 'Updated successfully 🥳');
 
     }
 
-    public function destroy(Article $article)
+    public function destroy(Article $article, Request $request)
     {
+        event(new Action_store($article,'delete', auth()->user(), $request->ip(), 'articles' ));
         unlink('files/images/' . $article['photo']);
         $article->delete();
         return redirect()->back()->with('message', 'Deleted successfully 🥳');

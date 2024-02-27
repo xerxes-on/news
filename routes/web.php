@@ -15,23 +15,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [mainController::class, 'index']);
 Route::get('/show/{article}', [mainController::class, 'show'])->name('show');
 Route::get('/hashtag/{tag}', [mainController::class, 'hashtag'])->name('hashtag');
-Route::get('/birth', [mainController::class, 'birth']);
 Route::get('/lang/{lang}', [mainController::class, 'lang'])->name('lang');
-
 Route::get('/theme', [mainController::class, 'theme'])->name('theme');
-
 Route::get('/list/{category}', [mainController::class, 'list'])->name('list');
 Route::post('comment/{article}', [mainController::class, 'comment'])->name('comment');
 Route::get('search', [mainController::class, 'search'])->name('main-search');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+//Route::middleware('auth')->group(function () {
+//    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+//});
 
 Route::group(['middleware'=>'auth','prefix' =>'admin'],function () {
     Route::get('/', [adminController::class, 'index']);

@@ -15,6 +15,16 @@ use Illuminate\Support\Facades\Http;
 
 class mainController extends Controller
 {
+    public function browser_stats()
+    {
+          $stats = Stats::all();
+        $chrome = round(Stats::where('browser', "Chrome")->count() * 100 / count($stats),2);
+      $safari = round(Stats::where('browser', "Safari")->count() * 100 / count($stats),2);
+      $firefox = round(Stats::where('browser', "Firefox")->count() * 100 / count($stats),2);
+      $edge = round(Stats::where('browser', "Microsoft Edge")->count() * 100 / count($stats),2);
+       return  [$chrome,$safari,$firefox,$edge];
+
+    }
     public function index(){
       $response = Http::get('https://cbu.uz/uz/arkhiv-kursov-valyut/json/');
       $data = $response->json();
@@ -23,12 +33,7 @@ class mainController extends Controller
       $latest_articles = Article::latest()->take(6)->get();;
       $categories = Category::all();
       $most_viewed_articles = Article::orderBy('viewsint', 'desc')->take(3)->get();
-      $stats = Stats::all();
-      $chrome = round(Stats::where('browser', "Chrome")->count() * 100 / count($stats),2);
-      $safari = round(Stats::where('browser', "Safari")->count() * 100 / count($stats),2);
-      $firefox = round(Stats::where('browser', "Firefox")->count() * 100 / count($stats),2);
-      $edge = round(Stats::where('browser', "Microsoft Edge")->count() * 100 / count($stats),2);
-      $browser = [$chrome,$safari,$firefox,$edge];
+      $browser = $this->browser_stats();
       return view('pages.home', compact([
         'categories',
         'articles',
@@ -44,6 +49,7 @@ class mainController extends Controller
       $data = $response->json();
       $categories = Category::all();
       $comments = $article->comments;
+      $browser = $this->browser_stats();
       $most_viewed_articles = Article::orderBy('viewsint', 'desc')->take(5)->get();
       $related_articles = Article::where('category_id', $article->category_id)->latest()->take(3)->get();
       return view('pages.show',compact([
@@ -52,13 +58,15 @@ class mainController extends Controller
         'most_viewed_articles',
         'related_articles',
         'data',
-        'comments'
+        'comments',
+        'browser'
       ]));
     }
     public function list(Category $category){
       $response = Http::get('https://cbu.uz/uz/arkhiv-kursov-valyut/json/');
       $data = $response->json();
       $categories = Category::all();
+      $browser = $this->browser_stats();
       $most_viewed_articles = Article::orderBy('viewsint', 'desc')->take(5)->get();
       $articles=Article::where('category_id', $category->id)->latest()->take(7)->get();
       return view('pages.list', compact([
@@ -66,6 +74,7 @@ class mainController extends Controller
         'articles',
         'most_viewed_articles',
         'data',
+        'browser'
       ]));
     }
     public function comment(Request $request, $article){
@@ -92,7 +101,7 @@ class mainController extends Controller
     }
     public function lang($lang){
         session(['lang' => $lang]);
-        return redirect('/');
+        return redirect()->back();
     }
     public function theme(){
         if(session()->has('dark')){
@@ -101,17 +110,7 @@ class mainController extends Controller
             session(['dark' => true]);
         }
 
-        return redirect('/');
-    }
-    public function birth(){
-      $client = new Client();
-      $response = $client->request('GET', 'https://get-population.p.rapidapi.com/population/country?country=egypt', [
-        'headers' => [
-          'X-RapidAPI-Host' => 'get-population.p.rapidapi.com',
-          'X-RapidAPI-Key' => '174b260ab2msh4aa500149c5b2b5p12b8e4jsnb2497a06d762',
-        ],
-      ]);
-    dd($response->getBody());
+        return redirect()->back();
     }
     public function search(Request $request){
         $search = $request->search;

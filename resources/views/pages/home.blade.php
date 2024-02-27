@@ -41,7 +41,7 @@
             <ul class="news__list basic-flex">
               @foreach($latest_articles as $latest)
               <li class="news__item">
-                <a href="#" class="basic-flex news__link">
+                <a href="{{ route('show', $latest->id) }}" class="basic-flex news__link">
                   <div class="news-image-wrapper"><img src="/files/images/{{$latest->photo}}" alt="Bottom Img"></div>
                   <div class="news-box basic-flex">
                     <h4 class="news__title color-black">{{$latest['title_' . session('lang')]}}</h4>

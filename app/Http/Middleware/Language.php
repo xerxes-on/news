@@ -8,19 +8,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Language
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if(session()->has('lng')){
-            $lang = session('lng');
+        if(session()->has('lang')){
+            $lang = session('lang');
         }else{
-            $lang = 'en';
+            session(['lang' =>'en']);
         }
-        \App::setLocale($lang);
+//        \App::setLocale($lang);
         return $next($request);
     }
 }

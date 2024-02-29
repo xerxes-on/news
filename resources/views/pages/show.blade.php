@@ -6,7 +6,10 @@
           <div class="article__wrapper color-black">
             <h2 class="article__title color-black">{{$article['title_'.session('lang')]}}
             </h2>
-            <span class="article__date basic-flex">11:31 / 15.05.2020</span>
+            <span class="article__date basic-flex inline">11:31 / 15.05.2020</span>
+            <span style="float: right; display: inline-block">
+                {{$article->views}}
+                <i class="fa-regular fa-eye color-black"></i></span>
             <img src="/files/images/{{$article->photo}}" alt="{{$article['title_'.session('lang')]}}
             "><p class="color-black">
             {!! $article['body_'.session('lang')] !!}

@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="/img/logo3.png">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/cutom.css">
+    <script src="https://kit.fontawesome.com/9c18f8edbf.js" crossorigin="anonymous"></script>
   <style>
   @property --num {
   syntax: "<integer>";

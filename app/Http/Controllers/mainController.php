@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Stats;
 use App\Models\Tag;
+use DeviceDetector\Parser\Client\Browser;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -17,11 +18,11 @@ class mainController extends Controller
 {
     public function browser_stats()
     {
-          $stats = Stats::all();
+        $stats = Stats::all();
         $chrome = round(Stats::where('browser', "Chrome")->count() * 100 / count($stats),2);
-      $safari = round(Stats::where('browser', "Safari")->count() * 100 / count($stats),2);
-      $firefox = round(Stats::where('browser', "Firefox")->count() * 100 / count($stats),2);
-      $edge = round(Stats::where('browser', "Microsoft Edge")->count() * 100 / count($stats),2);
+        $safari = round(Stats::where('browser', "Safari")->count() * 100 / count($stats),2);
+        $firefox = round(Stats::where('browser', "Firefox")->count() * 100 / count($stats),2);
+        $edge = round(Stats::where('browser', "Microsoft Edge")->count() * 100 / count($stats),2);
        return  [$chrome,$safari,$firefox,$edge];
 
     }
@@ -32,7 +33,7 @@ class mainController extends Controller
       $articles = Article::take(8)->get();
       $latest_articles = Article::latest()->take(6)->get();;
       $categories = Category::all();
-      $most_viewed_articles = Article::orderBy('viewsint', 'desc')->take(3)->get();
+      $most_viewed_articles = Article::orderBy('views', 'desc')->take(3)->get();
       $browser = $this->browser_stats();
       return view('pages.home', compact([
         'categories',
@@ -45,14 +46,17 @@ class mainController extends Controller
       ]));
     }
     public function show(Article $article){
-      $response = Http::get('https://cbu.uz/uz/arkhiv-kursov-valyut/json/');
-      $data = $response->json();
-      $categories = Category::all();
-      $comments = $article->comments;
-      $browser = $this->browser_stats();
-      $most_viewed_articles = Article::orderBy('viewsint', 'desc')->take(5)->get();
-      $related_articles = Article::where('category_id', $article->category_id)->latest()->take(3)->get();
-      return view('pages.show',compact([
+        $views = $article->views;
+        $views+=1;
+        $article->update(['views'=>$views]);
+        $response = Http::get('https://cbu.uz/uz/arkhiv-kursov-valyut/json/');
+        $data = $response->json();
+        $categories = Category::all();
+        $comments = $article->comments;
+        $browser = $this->browser_stats();
+        $most_viewed_articles = Article::orderBy('viewsint', 'desc')->take(5)->get();
+        $related_articles = Article::where('category_id', $article->category_id)->latest()->take(3)->get();
+        return view('pages.show',compact([
         'article',
         'categories',
         'most_viewed_articles',
@@ -60,7 +64,7 @@ class mainController extends Controller
         'data',
         'comments',
         'browser'
-      ]));
+        ]));
     }
     public function list(Category $category){
       $response = Http::get('https://cbu.uz/uz/arkhiv-kursov-valyut/json/');
@@ -92,11 +96,14 @@ class mainController extends Controller
       $categories = Category::all();
       $most_viewed_articles = Article::orderBy('viewsint', 'desc')->take(5)->get();
       $articles = $tag->articles->take(5);
+      $browser = $this->browser_stats();
+
       return view('pages.list', compact([
         'categories',
         'articles',
         'most_viewed_articles',
         'data',
+        'browser'
       ]));
     }
     public function lang($lang){
@@ -118,6 +125,7 @@ class mainController extends Controller
         $most_viewed_articles = Article::orderBy('viewsint', 'desc')->take(5)->get();
         $response = Http::get('https://cbu.uz/uz/arkhiv-kursov-valyut/json/');
         $data = $response->json();
+        $browser = $this->browser_stats();
         $articles = Article::where(function ($query) use ($search) {
             $query->where('title_' . session('lang'), 'like', "%$search%")
                 ->orwhere('body_' . session('lang'), 'like', "%$search%");
@@ -129,7 +137,8 @@ class mainController extends Controller
         return view( 'pages.list', compact('articles',
             'categories',
                         'most_viewed_articles',
-                        'data'
+                        'data',
+        'browser'
         ));
     }
 

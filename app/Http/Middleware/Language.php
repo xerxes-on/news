@@ -15,7 +15,6 @@ class Language
         }else{
             session(['lang' =>'en']);
         }
-//        \App::setLocale($lang);
         return $next($request);
     }
 }

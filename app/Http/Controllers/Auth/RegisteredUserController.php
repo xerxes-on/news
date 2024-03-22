@@ -23,11 +23,6 @@ class RegisteredUserController extends Controller
         return view('auth.customregister');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -46,6 +41,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('admin');
+        return redirect()->route('admin/');
     }
 }
